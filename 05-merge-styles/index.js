@@ -2,8 +2,8 @@
 const fs = require('fs');
 const path = require('node:path');
 
-const filePath = "05-merge-styles/project-dist/bundle.css";
-const directoryPath = "05-merge-styles/styles"
+const filePath = path.join(__dirname, 'project-dist/bundle.css');
+const directoryPath = path.join(__dirname, 'styles');
 
 
 // Add file bundle.css

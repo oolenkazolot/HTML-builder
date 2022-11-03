@@ -1,8 +1,9 @@
 
-const newDirectoryPath = "04-copy-directory/files-copy";
-const directoryPath = "04-copy-directory/files";
-
 const fs = require('fs');
+const path = require('node:path');
+
+const newDirectoryPath = path.join(__dirname, 'files-copy');
+const directoryPath = path.join(__dirname, 'files');
 
 fs.mkdir(newDirectoryPath, { recursive: true }, (err) => {
 
