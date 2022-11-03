@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('node:path');
 
 const newDirectoryPath = path.join(__dirname, 'project-dist');
+const dirComponentsPath = path.join(__dirname, 'components');
 const directory = path.dirname(newDirectoryPath);
 
 //Add new directory project-dist
@@ -18,19 +19,25 @@ fs.mkdir(newDirectoryPath, { recursive: true }, (err) => {
 });
 
 function addHtml() {
-  fs.readFile(`${directory}/template.html`, 'utf8', function (error, template) {
-    fs.readFile(`${directory}/components/header.html`, 'utf8', function (error, header) {
-      template = template.replace('{{header}}', header);
+  fs.readdir(dirComponentsPath, { withFileTypes: true }, (err, files) => {
+    if (err) throw err;
 
-      fs.readFile(`${directory}/components/articles.html`, 'utf8', function (error, articles) {
-        template = template.replace('{{articles}}', articles);
+    fs.readFile(`${directory}/template.html`, 'utf8', function (error, template) {
+      if (error) throw err;
+      files.forEach((item) => {
+        if (item.isFile()) {
+          const parse = path.parse(`${dirComponentsPath}/${item.name}`);
 
-        fs.readFile(`${directory}/components/footer.html`, 'utf8', function (error, footer) {
-          template = template.replace('{{footer}}', footer);
-          fs.writeFile(`${directory}/project-dist/index.html`, template, function (error) {
-            if (error) throw error;
-          });
-        });
+          if (parse.ext === '.html') {
+            fs.readFile(`${dirComponentsPath}/${item.name}`, 'utf8', function (error1, data) {
+              if (error1) throw err;
+              template = template.replace(`{{${parse.name}}}`, data);
+              fs.writeFile(`${directory}/project-dist/index.html`, template, function (error) {
+                if (error) throw error;
+              });
+            });
+          }
+        }
       });
     });
   });
